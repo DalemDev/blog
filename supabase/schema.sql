@@ -170,7 +170,7 @@ INSERT INTO tags (name, slug) VALUES
   ('GraphQL', 'graphql'),
   ('Arquitectura', 'arquitectura'),
   ('Microservicios', 'microservicios'),
-  ('Sistemas Distribuidos', 'sistemas-distribuidos')
+  ('Sistemas Distribuidos', 'sistemas-distribuidos'),
   ('PostgreSQL', 'postgresql'),
   ('MySQL', 'mysql'),
   ('MongoDB', 'mongodb'),
