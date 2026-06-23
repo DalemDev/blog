@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx shadcn@latest add button input label textarea badge card select separator skeleton toast dropdown-menu dialog alert-dialog sheet tabs table form)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\\\(public\\)\\\\posts\\\\[slug]\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\\\(public\\)\\\\categoria\\\\[slug]\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\\\(public\\)\\\\tag\\\\[slug]\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\\\(public\\)\\\\buscar\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\login\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\dashboard\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\posts\\\\nuevo\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\posts\\\\[id]\\\\editar\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\categorias\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\tags\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\admin\\\\comentarios\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\api\\\\comments\" \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\components\\\\admin\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx shadcn@latest add input label textarea badge select separator --yes)",
+      "Bash(node -e \"const p = require\\('./node_modules/@base-ui/react/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(node -e \"const types = require\\('./node_modules/@base-ui/react/input'\\); console.log\\(Object.keys\\(types\\)\\)\")",
+      "Bash(npm run *)",
+      "Bash(del \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\page.tsx\")",
+      "Bash(node -e \"const nt = require\\('C:/Users/usuario/Desktop/blog/node_modules/next-themes'\\); console.log\\(Object.keys\\(nt\\)\\)\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\usuario\\Desktop\\blog\\app\\(public)\\posts"
+    ]
+  }
+}
