@@ -10,7 +10,8 @@
       "Bash(node -e \"const types = require\\('./node_modules/@base-ui/react/input'\\); console.log\\(Object.keys\\(types\\)\\)\")",
       "Bash(npm run *)",
       "Bash(del \"C:\\\\Users\\\\usuario\\\\Desktop\\\\blog\\\\app\\\\page.tsx\")",
-      "Bash(node -e \"const nt = require\\('C:/Users/usuario/Desktop/blog/node_modules/next-themes'\\); console.log\\(Object.keys\\(nt\\)\\)\")"
+      "Bash(node -e \"const nt = require\\('C:/Users/usuario/Desktop/blog/node_modules/next-themes'\\); console.log\\(Object.keys\\(nt\\)\\)\")",
+      "Bash(node -e \"const m = require\\('/home/jmeza/Escritorio/blog/node_modules/@uiw/react-md-editor'\\); const c = m.commands; console.log\\(typeof c, Object.keys\\(c\\).slice\\(0,30\\)\\)\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\usuario\\Desktop\\blog\\app\\(public)\\posts"

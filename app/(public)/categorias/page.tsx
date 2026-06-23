@@ -1,7 +1,26 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { FileText } from 'lucide-react'
+import {
+  FileText, Folder,
+  Code2, BarChart2, Database, Network, Brain, ShieldCheck, Briefcase,
+  type LucideIcon,
+} from 'lucide-react'
 import { getCategoriesWithCount } from '@/lib/queries'
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  'code-2':       Code2,
+  'bar-chart-2':  BarChart2,
+  'database':     Database,
+  'network':      Network,
+  'brain':        Brain,
+  'shield-check': ShieldCheck,
+  'briefcase':    Briefcase,
+}
+
+function CategoryIcon({ name, color }: { name: string; color: string }) {
+  const Icon = CATEGORY_ICONS[name] ?? Folder
+  return <Icon className="h-5 w-5 shrink-0" style={{ color }} />
+}
 
 export const metadata: Metadata = {
   title: 'Categorías',
@@ -35,7 +54,7 @@ export default async function CategoriasPage() {
 
             <div className="flex items-start justify-between gap-2 pt-1">
               <div className="flex items-center gap-2">
-                <span className="text-2xl leading-none">{cat.icon}</span>
+                <CategoryIcon name={cat.icon} color={cat.color} />
                 <h2 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
                   {cat.name}
                 </h2>
