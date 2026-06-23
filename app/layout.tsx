@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: 'Capa Cero',
-    template: '%s | Capa Cero',
+    template: '%s',
   },
   description: 'Blog técnico sobre ingeniería de software, bases de datos, inteligencia artificial e infraestructura.',
 }
