@@ -32,7 +32,7 @@ export function ImageUploader({ value, onChange, label = 'Imagen de portada' }: 
     setError(null)
 
     const ext = file.name.split('.').pop()
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const path = `posts/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
     const { error: uploadError } = await supabase.storage
       .from('post-images')

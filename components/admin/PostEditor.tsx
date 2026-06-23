@@ -2,7 +2,7 @@
 
 import React from 'react'
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,9 @@ import { ImageUploader } from './ImageUploader'
 import { createClient } from '@/lib/supabase/client'
 import { slugify, calcReadTime } from '@/lib/utils'
 import type { Category, Tag, PostWithRelations } from '@/types'
+import { ImageIcon, Loader2 } from 'lucide-react'
+import { commands as mdCommands } from '@uiw/react-md-editor'
+import type { ICommand } from '@uiw/react-md-editor'
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 
@@ -38,6 +41,42 @@ export function PostEditor({ categories, tags, post }: PostEditorProps) {
   const [status, setStatus] = useState<'draft' | 'published'>(post?.status ?? 'draft')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [uploadingInline, setUploadingInline] = useState(false)
+
+  const inlineFileRef = useRef<HTMLInputElement>(null)
+  const editorApiRef = useRef<{ replaceSelection: (text: string) => void } | null>(null)
+
+  const insertImageCommand = useMemo<ICommand>(() => ({
+    name: 'insert-inline-image',
+    keyCommand: 'insertInlineImage',
+    buttonProps: { 'aria-label': 'Subir e insertar imagen', title: 'Subir imagen al contenido' },
+    icon: <ImageIcon size={12} />,
+    execute: (_state, api) => {
+      editorApiRef.current = api as { replaceSelection: (text: string) => void }
+      inlineFileRef.current?.click()
+    },
+  }), [])
+
+  async function handleInlineImage(file: File) {
+    if (!file.type.startsWith('image/')) { setError('Solo se permiten imágenes.'); return }
+    if (file.size > 5 * 1024 * 1024) { setError('La imagen no puede superar 5MB.'); return }
+
+    setUploadingInline(true)
+    setError(null)
+
+    const ext = file.name.split('.').pop()
+    const path = `posts/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('post-images')
+      .upload(path, file, { upsert: false })
+
+    if (uploadError) { setError('Error al subir la imagen.'); setUploadingInline(false); return }
+
+    const { data } = supabase.storage.from('post-images').getPublicUrl(path)
+    editorApiRef.current?.replaceSelection(`\n![imagen](${data.publicUrl})\n`)
+    setUploadingInline(false)
+  }
 
   // Auto-generate slug from title (only when creating)
   useEffect(() => {
@@ -97,6 +136,18 @@ export function PostEditor({ categories, tags, post }: PostEditorProps) {
 
   return (
     <div className="space-y-6">
+      <input
+        ref={inlineFileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) handleInlineImage(file)
+          e.target.value = ''
+        }}
+      />
+
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-4">
@@ -141,8 +192,15 @@ export function PostEditor({ categories, tags, post }: PostEditorProps) {
                 onChange={(v) => setContent(v ?? '')}
                 height={500}
                 preview="live"
+                commands={[...mdCommands.getCommands(), mdCommands.divider, insertImageCommand]}
               />
             </div>
+            {uploadingInline && (
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Subiendo imagen...
+              </div>
+            )}
           </div>
         </div>
 
