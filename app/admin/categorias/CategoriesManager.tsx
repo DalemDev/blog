@@ -2,7 +2,14 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Pencil, Trash2, Save, X } from 'lucide-react'
+import {
+  Plus, Pencil, Trash2, Save, X,
+  Folder, Code2, BarChart2, Database, Network, Brain, ShieldCheck, Briefcase,
+  Terminal, Cpu, Globe, Server, Layers, GitBranch, BookOpen, GraduationCap,
+  TrendingUp, Zap, Settings, Cloud, Lock, Users, Package, Bug, Wrench,
+  Microscope, Rocket, Activity, Star,
+  type LucideIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,6 +19,45 @@ import { slugify } from '@/lib/utils'
 import type { Category } from '@/types'
 
 const COLOR_OPTIONS = ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6']
+
+const ICON_OPTIONS: { name: string; icon: LucideIcon }[] = [
+  { name: 'folder',          icon: Folder },
+  { name: 'code-2',          icon: Code2 },
+  { name: 'bar-chart-2',     icon: BarChart2 },
+  { name: 'database',        icon: Database },
+  { name: 'network',         icon: Network },
+  { name: 'brain',           icon: Brain },
+  { name: 'shield-check',    icon: ShieldCheck },
+  { name: 'briefcase',       icon: Briefcase },
+  { name: 'terminal',        icon: Terminal },
+  { name: 'cpu',             icon: Cpu },
+  { name: 'globe',           icon: Globe },
+  { name: 'server',          icon: Server },
+  { name: 'layers',          icon: Layers },
+  { name: 'git-branch',      icon: GitBranch },
+  { name: 'book-open',       icon: BookOpen },
+  { name: 'graduation-cap',  icon: GraduationCap },
+  { name: 'trending-up',     icon: TrendingUp },
+  { name: 'zap',             icon: Zap },
+  { name: 'settings',        icon: Settings },
+  { name: 'cloud',           icon: Cloud },
+  { name: 'lock',            icon: Lock },
+  { name: 'users',           icon: Users },
+  { name: 'package',         icon: Package },
+  { name: 'bug',             icon: Bug },
+  { name: 'wrench',          icon: Wrench },
+  { name: 'microscope',      icon: Microscope },
+  { name: 'rocket',          icon: Rocket },
+  { name: 'activity',        icon: Activity },
+  { name: 'star',            icon: Star },
+]
+
+const ICON_MAP = Object.fromEntries(ICON_OPTIONS.map(({ name, icon }) => [name, icon])) as Record<string, LucideIcon>
+
+function CategoryIcon({ name, color, size = 4 }: { name: string; color?: string; size?: number }) {
+  const Icon = ICON_MAP[name] ?? Folder
+  return <Icon className={`h-${size} w-${size}`} style={color ? { color } : undefined} />
+}
 
 interface FormState {
   name: string
@@ -86,6 +132,7 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
       {showForm && (
         <div className="rounded-xl border border-border/50 bg-card p-5 space-y-4">
           <h2 className="font-semibold">{editingId ? 'Editar categoría' : 'Nueva categoría'}</h2>
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Nombre *</Label>
@@ -100,6 +147,7 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
               <Input value={slugify(form.name)} readOnly className="text-muted-foreground" />
             </div>
           </div>
+
           <div className="space-y-1.5">
             <Label>Descripción</Label>
             <Textarea
@@ -108,9 +156,36 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
               rows={2}
             />
           </div>
+
+          {/* Icon picker */}
+          <div className="space-y-2">
+            <Label>Ícono</Label>
+            <div className="flex flex-wrap gap-2">
+              {ICON_OPTIONS.map(({ name, icon: Icon }) => (
+                <button
+                  key={name}
+                  type="button"
+                  title={name}
+                  onClick={() => setForm((f) => ({ ...f, icon: name }))}
+                  className={`p-2 rounded-lg border transition-colors ${
+                    form.icon === name
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:bg-accent text-muted-foreground'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Seleccionado: <code className="bg-muted px-1 py-0.5 rounded">{form.icon}</code>
+            </p>
+          </div>
+
+          {/* Color picker */}
           <div className="space-y-1.5">
             <Label>Color</Label>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap items-center">
               {COLOR_OPTIONS.map((color) => (
                 <button
                   key={color}
@@ -125,9 +200,19 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
                 value={form.color}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, color: e.target.value }))}
                 className="w-8 h-8 rounded cursor-pointer border border-border"
+                title="Color personalizado"
               />
             </div>
           </div>
+
+          {/* Preview */}
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/40 border border-border/50">
+            <div className="p-1.5 rounded-md" style={{ backgroundColor: `${form.color}20` }}>
+              <CategoryIcon name={form.icon} color={form.color} size={5} />
+            </div>
+            <span className="text-sm font-medium">{form.name || 'Nombre de la categoría'}</span>
+          </div>
+
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-2">
             <Button onClick={handleSave} disabled={saving || !form.name.trim()}>
@@ -145,7 +230,7 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
             <tr>
               <th className="text-left px-4 py-3 font-medium text-muted-foreground">Nombre</th>
               <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Slug</th>
-              <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Color</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden sm:table-cell">Ícono / Color</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -156,8 +241,11 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
                 <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{cat.slug}</td>
                 <td className="px-4 py-3 hidden sm:table-cell">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: cat.color }} />
-                    <span className="text-xs text-muted-foreground">{cat.color}</span>
+                    <div className="p-1 rounded" style={{ backgroundColor: `${cat.color}20` }}>
+                      <CategoryIcon name={cat.icon} color={cat.color} size={4} />
+                    </div>
+                    <span className="text-xs text-muted-foreground">{cat.icon}</span>
+                    <div className="w-3 h-3 rounded-full ml-1" style={{ backgroundColor: cat.color }} />
                   </div>
                 </td>
                 <td className="px-4 py-3">
