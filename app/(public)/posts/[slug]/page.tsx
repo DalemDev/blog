@@ -11,6 +11,7 @@ import { getPostBySlug, getCommentsByPost } from '@/lib/queries'
 import { CategoryBadge } from '@/components/blog/CategoryBadge'
 import { TagBadge } from '@/components/blog/TagBadge'
 import { CommentSection } from '@/components/blog/CommentSection'
+import { ShareButtons } from '@/components/blog/ShareButtons'
 import { formatDate } from '@/lib/utils'
 
 interface PostPageProps {
@@ -114,6 +115,9 @@ export default async function PostPage({ params }: PostPageProps) {
           {post.content ?? ''}
         </ReactMarkdown>
       </div>
+
+      {/* Share */}
+      <ShareButtons title={post.title} />
 
       {/* Comments */}
       <CommentSection postId={post.id} comments={approvedComments} />
