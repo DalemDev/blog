@@ -214,7 +214,11 @@ export function PostEditor({ categories, tags, post }: PostEditorProps) {
             <Label>Categoría</Label>
             <Select value={categoryId} onValueChange={(v) => setCategoryId(v ?? '')}>
               <SelectTrigger>
-                <SelectValue placeholder="Seleccionar categoría" />
+                <SelectValue>
+                  {categoryId
+                    ? categories.find((c) => c.id === categoryId)?.name
+                    : <span className="text-muted-foreground">Seleccionar categoría</span>}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {categories.map((cat) => (
