@@ -26,6 +26,7 @@ export interface Post {
   author_id: string | null
   status: 'draft' | 'published'
   read_time: number
+  views: number
   published_at: string | null
   created_at: string
   updated_at: string

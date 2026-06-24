@@ -31,6 +31,26 @@ export function formatDate(dateString: string): string {
   })
 }
 
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
+
+export function extractHeadings(markdown: string): { level: number; text: string; id: string }[] {
+  const regex = /^(#{2,3})\s+(.+)$/gm
+  const headings: { level: number; text: string; id: string }[] = []
+  let match
+  while ((match = regex.exec(markdown)) !== null) {
+    const text = match[2].trim()
+    headings.push({ level: match[1].length, text, id: slugifyHeading(text) })
+  }
+  return headings
+}
+
 export function formatDateShort(dateString: string): string {
   return new Date(dateString).toLocaleDateString('es-ES', {
     year: 'numeric',

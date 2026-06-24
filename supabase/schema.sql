@@ -107,6 +107,17 @@ CREATE POLICY "post_images_admin_upload" ON storage.objects
 CREATE POLICY "post_images_admin_delete" ON storage.objects
   FOR DELETE USING (bucket_id = 'post-images' AND auth.role() = 'authenticated');
 
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS views INTEGER DEFAULT 0;
+
+CREATE OR REPLACE FUNCTION increment_post_views(post_slug TEXT)
+RETURNS void
+LANGUAGE SQL
+SECURITY DEFINER
+AS $$
+  UPDATE posts SET views = views + 1
+  WHERE slug = post_slug AND status = 'published';
+$$;
+
 INSERT INTO categories (name, slug, description, color, icon) VALUES
   ('Ingeniería de Software',    'ingenieria-de-software',    'Desarrollo de software, arquitectura y metodologías', '#6366f1', 'code-2'),
   ('Ciencia de Datos','ciencia-de-datos', 'Análisis y visualización de datos', '#f59e0b', 'bar-chart-2'),

@@ -195,6 +195,84 @@ export async function getAllComments(): Promise<Comment[]> {
   return data ?? []
 }
 
+// ── RELATED POSTS ─────────────────────────────────────────────────────────────
+
+export async function getRelatedPosts(
+  postId: string,
+  categoryId: string | null,
+  tagIds: string[],
+  limit = 3,
+): Promise<PostWithRelations[]> {
+  const supabase = await createClient()
+
+  // Try same category first
+  if (categoryId) {
+    const { data } = await supabase
+      .from('posts')
+      .select(`*, category:categories(*), tags:post_tags(tag:tags(*))`)
+      .eq('status', 'published')
+      .eq('category_id', categoryId)
+      .neq('id', postId)
+      .order('published_at', { ascending: false })
+      .limit(limit)
+
+    if (data && data.length >= limit) return data.map(normalizePost)
+
+    // Fill remaining slots with posts sharing tags
+    if (tagIds.length > 0 && data && data.length < limit) {
+      const existingIds = [postId, ...data.map((p) => p.id)]
+      const { data: postIdRows } = await supabase
+        .from('post_tags')
+        .select('post_id')
+        .in('tag_id', tagIds)
+        .not('post_id', 'in', `(${existingIds.join(',')})`)
+
+      const extraIds = [...new Set(postIdRows?.map((r) => r.post_id) ?? [])].slice(0, limit - data.length)
+      if (extraIds.length > 0) {
+        const { data: extra } = await supabase
+          .from('posts')
+          .select(`*, category:categories(*), tags:post_tags(tag:tags(*))`)
+          .eq('status', 'published')
+          .in('id', extraIds)
+          .limit(limit - data.length)
+        return [...data, ...(extra ?? [])].map(normalizePost)
+      }
+      return data.map(normalizePost)
+    }
+
+    return (data ?? []).map(normalizePost)
+  }
+
+  // No category — use tags only
+  if (tagIds.length > 0) {
+    const { data: postIdRows } = await supabase
+      .from('post_tags')
+      .select('post_id')
+      .in('tag_id', tagIds)
+      .neq('post_id', postId)
+    const ids = [...new Set(postIdRows?.map((r) => r.post_id) ?? [])].slice(0, limit)
+    if (ids.length > 0) {
+      const { data } = await supabase
+        .from('posts')
+        .select(`*, category:categories(*), tags:post_tags(tag:tags(*))`)
+        .eq('status', 'published')
+        .in('id', ids)
+        .limit(limit)
+      return (data ?? []).map(normalizePost)
+    }
+  }
+
+  // Fallback: latest posts
+  const { data } = await supabase
+    .from('posts')
+    .select(`*, category:categories(*), tags:post_tags(tag:tags(*))`)
+    .eq('status', 'published')
+    .neq('id', postId)
+    .order('published_at', { ascending: false })
+    .limit(limit)
+  return (data ?? []).map(normalizePost)
+}
+
 // ── STATS (dashboard) ─────────────────────────────────────────────────────────
 
 export async function getDashboardStats() {
