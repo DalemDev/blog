@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Cpu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,11 +38,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
-          <div className="flex justify-center">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+          <Link href="/" className="flex justify-center group" title="Ir al blog">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Cpu className="h-6 w-6 text-primary" />
             </div>
-          </div>
+          </Link>
           <h1 className="text-2xl font-bold">Capa Cero Admin</h1>
           <p className="text-sm text-muted-foreground">Ingresa con tu cuenta de administrador</p>
         </div>
