@@ -11,6 +11,7 @@ import {
   LogOut,
   Cpu,
   ExternalLink,
+  X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -23,7 +24,11 @@ const navItems = [
   { href: '/admin/comentarios', label: 'Comentarios', icon: MessageSquare },
 ]
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  onClose?: () => void
+}
+
+export function AdminSidebar({ onClose }: AdminSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -37,9 +42,19 @@ export function AdminSidebar() {
   return (
     <aside className="flex flex-col w-64 shrink-0 border-r border-border/50 bg-card min-h-screen">
       {/* Brand */}
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-border/50 font-bold text-lg">
+      <div className="flex items-center gap-2 px-4 py-5 border-b border-border/50 font-bold text-lg">
         <Cpu className="h-5 w-5 text-primary" />
-        Capa Cero Admin
+        <span className="flex-1">Capa Cero Admin</span>
+        {/* Botón cerrar — solo móvil */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-1 rounded-md hover:bg-accent transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Nav */}
@@ -48,6 +63,7 @@ export function AdminSidebar() {
           <Link
             key={href}
             href={href}
+            onClick={onClose}
             className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
               pathname.startsWith(href)
